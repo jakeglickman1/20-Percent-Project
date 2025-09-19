@@ -71,6 +71,7 @@ function bindEvents() {
   elements.plannerBody.addEventListener('click', handlePlannerCellActions);
 
   elements.wardrobeGrid.addEventListener('click', (event) => {
+    // Leverage event delegation so newly rendered cards also support removal.
     const button = event.target.closest('[data-action="remove-item"]');
     if (!button) return;
     const id = button.dataset.id;
@@ -78,6 +79,7 @@ function bindEvents() {
   });
 
   elements.outfitGrid.addEventListener('click', (event) => {
+    // Keep the markup lean by listening once on the grid container.
     const removeBtn = event.target.closest('[data-action="remove-outfit"]');
     if (removeBtn) {
       removeOutfit(removeBtn.dataset.id);
@@ -102,6 +104,7 @@ async function handleUploadSubmit(event) {
   }
 
   const baseName = elements.itemName.value.trim();
+  // Use the shared base name across multi-file uploads to keep variants grouped.
   if (!baseName) {
     alert('Please provide an item name.');
     return;
@@ -463,6 +466,7 @@ function renderUniqueStreak() {
   const seen = new Set();
   let streak = 0;
   for (const entry of sorted) {
+    // Stop counting as soon as an outfit repeats in the ordered history.
     if (seen.has(entry.outfitId)) break;
     seen.add(entry.outfitId);
     streak += 1;
@@ -485,6 +489,7 @@ function renderAttentionItems() {
   }
 
   const lastWornMap = new Map();
+  // Track the most recent wear date for each item to avoid repeated scans later.
   state.history.forEach((entry) => {
     const outfit = state.outfits.find((o) => o.id === entry.outfitId);
     if (!outfit) return;
@@ -529,6 +534,7 @@ function renderPlanner() {
       ${entry ? `<button class="link-button" data-action="clear-plan" data-date="${iso}">Clear</button>` : ''}
     `;
     if (isPast && !entry) {
+      // Visually mute past dates that never received a plan.
       cell.classList.add('muted-cell');
     }
     row.appendChild(cell);
@@ -557,6 +563,7 @@ function renderInsights() {
   }
 
   const insights = [];
+  // Blend short-term stats with planner data so the list always feels actionable.
   if (state.history.length) {
     const counts = state.history.reduce((acc, entry) => {
       acc[entry.outfitId] = (acc[entry.outfitId] || 0) + 1;

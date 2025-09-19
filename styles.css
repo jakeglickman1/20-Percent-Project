@@ -338,6 +338,7 @@ select[multiple] {
   gap: 18px;
 }
 
+/* Wardrobe cards share this base styling—keep class names in sync with app.js rendering. */
 .wardrobe-item {
   background: rgba(30, 41, 59, 0.6);
   border-radius: var(--radius-md);
@@ -562,6 +563,7 @@ select[multiple] {
 }
 
 .muted-cell {
+  /* Applied when a calendar day is in the past without a stored plan. */
   opacity: 0.5;
 }
 
